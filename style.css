@@ -13,6 +13,10 @@ body {
     grid-auto-columns: 1fr;
 }
 
+.search-container * {
+    margin: 0.5vh;
+}
+
 .temp {
     font-size: 1.5rem;
     font-weight: bold;
@@ -54,4 +58,16 @@ button {
 
 button:hover {
     background-color: rgb(242, 242, 242);
+}
+
+@media screen and (max-width: 900px) {
+    .search-container {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .container {
+        grid-auto-flow: row;
+        grid-template-rows: 1fr;
+    }
 }

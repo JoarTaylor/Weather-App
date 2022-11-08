@@ -51,7 +51,6 @@ function getSearch() {
             cityCard.appendChild(weatherImg);
             cityCard.appendChild(weatherInfo);
             
-            
             deleteCard.addEventListener('click', () => {
                 cityCard.classList.add('hide');
             })
