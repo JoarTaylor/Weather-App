@@ -1,61 +1,60 @@
 const container = document.querySelector('.container');
 let searchField = document.querySelector('.search-field');
 const searchButton = document.querySelector('.search-button');
+const searchContainer = document.querySelector('.search-container');
+
+let deletedCitys = [];
+
+const recoverCitys = document.createElement('button');
+recoverCitys.innerHTML = "Recover Deleted Citys";
+recoverCitys.classList.add('hide');
+searchContainer.appendChild(recoverCitys);
+
 
 //get value of search button
 searchButton.addEventListener('click', getSearch);
 searchField.addEventListener('keydown', (event) => {
-    if(event.keyCode === 13) {
+    if(event.key === "Enter") {
         getSearch();
     }
 })
 
 function getSearch() {
     let searchString = searchField.value;
-    let citys = [];
-    let newObject = {
-        city: searchString
-    }
     searchField.value = '';
-    citys.push(newObject);
-    
-    //loop through citys
-    for(let i=0; i<citys.length; i++){
-        let url= "https://api.openweathermap.org/data/2.5/weather?q=" + citys[i].city + "&units=metric&appid=96196581009ceee5cfcf8592e7cb5eb4"
+
+    let url= "https://api.openweathermap.org/data/2.5/weather?q=" + searchString + "&units=metric&appid=96196581009ceee5cfcf8592e7cb5eb4"
         
-        //call function and use data
-        getWeather(url).then((data) => { 
-            const deleteCard = document.createElement('button');
-            deleteCard.innerHTML = 'Close';
+    //call function and use data
+    getWeather(url).then((data) => { 
+        const cityCard = document.createElement('div');
+        cityCard.className = "city-card";
+        cityCard.classList.add('card-styling');
 
-            const cityCard = document.createElement('div');
-            cityCard.classList.add('card-styling');
+        const deleteCard = document.createElement('button');
+        deleteCard.innerHTML = 'Close';
 
-            const weatherImg = document.createElement('img');
-            weatherImg.src = "https://openweathermap.org/img/w/" + data.weather[0].icon + ".png";
+        imgSrc = "https://openweathermap.org/img/w/" + data.weather[0].icon + ".png";
 
-            const cityHeader = document.createElement('h3');
-            cityHeader.innerHTML = data.name;
+        cityCard.innerHTML = `<h3>${data.name}</3> <h4>${data.main.temp} °C</h4><p>${data.weather[0].description}</p> <img src=${imgSrc}></img>
+        `
+        cityCard.appendChild(deleteCard);
+        container.appendChild(cityCard);
 
-            const temp = document.createElement('div');
-            temp.innerHTML = data.main.temp + ' °C';
-            temp.classList.add('temp');
+        deleteCard.addEventListener('click', () => {
+            container.removeChild(cityCard);
 
-            const weatherInfo = document.createElement('div');
-            weatherInfo.innerHTML = data.weather[0].description;
+            deletedCitys.push(cityCard);
+            recoverCitys.classList.remove('hide');
+        })
 
+        recoverCitys.addEventListener('click', () => {
             container.appendChild(cityCard);
-            cityCard.appendChild(deleteCard);
-            cityCard.appendChild(cityHeader);
-            cityCard.appendChild(temp);
-            cityCard.appendChild(weatherImg);
-            cityCard.appendChild(weatherInfo);
-            
-            deleteCard.addEventListener('click', () => {
-                cityCard.classList.add('hide');
-            })
-        });
-    }
+        })
+
+        //drag and drop citycards to change position in array. clickevent- "dragover" "drop"
+        
+    });
 }
 
 //fetch weather function
